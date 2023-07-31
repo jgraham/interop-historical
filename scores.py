@@ -2,12 +2,14 @@ import argparse
 import csv
 import io
 import pygit2
+import os
 import sys
 from datetime import datetime
 
 def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--branch", default="origin/gh-pages")
+    parser.add_argument("--out-path", default=os.curdir)
     parser.add_argument("repo_path", help="Path to interop scoring repo")
     return parser
 
@@ -58,7 +60,8 @@ def main():
 
     repo = pygit2.Repository(args.repo_path)
 
-    score_data = {"data/interop-2023/interop-2023-experimental-v2.csv": ScoreData()}
+    score_data = {"data/interop-2023/interop-2023-experimental-v2.csv": ScoreData(),
+                  "data/interop-2023/interop-2023-stable-v2.csv": ScoreData()}
 
     for (commit, blobs) in load_commits(repo, args.branch, score_data.keys()):
         commit_time = commit.commit_time
@@ -67,7 +70,8 @@ def main():
             score_data[filename].add(commit_time, data)
 
     for path, data in score_data.items():
-        out_path = path.rsplit("/", 1)[1].replace(".csv", "-historic.csv")
+        out_path = os.path.join(args.out_path,
+                                path.rsplit("/", 1)[1].replace(".csv", "-historic.csv"))
         with open(out_path, "w") as f:
             data.write(f)
 
