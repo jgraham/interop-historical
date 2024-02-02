@@ -60,8 +60,8 @@ def main():
 
     repo = pygit2.Repository(args.repo_path)
 
-    score_data = {"data/interop-2023/interop-2023-experimental-v2.csv": ScoreData(),
-                  "data/interop-2023/interop-2023-stable-v2.csv": ScoreData()}
+    score_data = {"data/interop-2024/interop-2024-experimental-v2.csv": ScoreData(),
+                  "data/interop-2024/interop-2024-stable-v2.csv": ScoreData()}
 
     for (commit, blobs) in load_commits(repo, args.branch, score_data.keys()):
         commit_time = commit.commit_time
